@@ -123,10 +123,10 @@ class Command(pdu.PDU):
         if hasattr(self, 'prep') and callable(self.prep):
             self.prep()
 
-        body = ''
+        body = b''
 
         for field in self.params_order:
-            #print field
+            print('field (%d): %r type=%r' % (self.field_is_optional(field), repr(field), repr(self.params[field].type)))
             param = self.params[field]
             #print param
             if self.field_is_optional(field):
@@ -169,7 +169,7 @@ class Command(pdu.PDU):
         if data:
             return struct.pack(fmt, data)
         else:
-            return chr(0)  # null terminator
+            return bytes([0])  # null terminator
 
     def _generate_string(self, field):
         """Generate string value"""
@@ -189,14 +189,14 @@ class Command(pdu.PDU):
                 value = chr(0)
 
         setattr(self, field, field_value)
-        return value
+        return value.encode()
 
     def _generate_ostring(self, field):
         """Generate octet string value (no null terminator)"""
 
         value = getattr(self, field)
         if value:
-            return value
+            return value.encode()
         else:
             return None  # chr(0)
 
@@ -280,7 +280,7 @@ class Command(pdu.PDU):
         """Parse variable-length string from a PDU.
         Return (data, pos) tuple."""
 
-        end = data.find(chr(0), pos)
+        end = data.find(bytes([0]), pos)
         length = end - pos
 
         field_value = data[pos:pos + length]
@@ -923,4 +923,3 @@ class AlertNotification(Command):
         """Initialize"""
         super(AlertNotification, self).__init__(command, **kwargs)
         self._set_vars(**(dict.fromkeys(self.params)))
-
