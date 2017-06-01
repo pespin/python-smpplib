@@ -38,7 +38,7 @@ def get_command_name(code):
     """Return command name by given code. If code is unknown, raise
     UnkownCommandError exception"""
 
-    for key, value in commands.iteritems():
+    for key, value in list(commands.items()):
         if value == code:
             return key
 

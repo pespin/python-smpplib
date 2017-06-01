@@ -66,7 +66,7 @@ def get_optional_name(code):
     """Return optional_params name by given code. If code is unknown, raise
     UnkownCommandError exception"""
 
-    for key, value in consts.OPTIONAL_PARAMS.iteritems():
+    for key, value in list(consts.OPTIONAL_PARAMS.items()):
         if value == code:
             return key
 
@@ -113,7 +113,7 @@ class Command(pdu.PDU):
 
     def _set_vars(self, **kwargs):
         """set attributes accordingly to kwargs"""
-        for key, value in kwargs.iteritems():
+        for key, value in list(kwargs.items()):
             if not hasattr(self, key) or getattr(self, key) is None:
                 setattr(self, key, value)
 
